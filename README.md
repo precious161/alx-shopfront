@@ -60,7 +60,7 @@ Add screenshots here once your UI is ready to showcase different views:
 ## 🛠️ Installation & Setup  
 ```bash
 # Clone the repository
-git clone https://github.com/<your-username>/alx-shopfront.git
+git clone https://github.com/precious161/alx-shopfront.git
 cd alx-shopfront
 
 # Install dependencies
