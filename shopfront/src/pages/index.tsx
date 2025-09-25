@@ -1,34 +1,42 @@
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchProducts } from "@/store/productsSlice";
-import type { RootState, AppDispatch } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchProducts,
+  selectProducts,
+  selectLoading,
+  selectError,
+} from "@/store/slices/productsSlice";
+import type { AppDispatch } from "@/store/store";
 
 export default function Home() {
   const dispatch = useDispatch<AppDispatch>();
-  const { items, loading, error } = useSelector(
-    (state: RootState) => state.products
-  );
+  const products = useSelector(selectProducts);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  if (loading) return <p className="text-center mt-10">Loading products...</p>;
-  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
+  if (loading) return <p className="text-blue-500">Loading products...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
-    <main className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
-      {items.map((product) => (
-        <div key={product.id} className="border rounded-lg p-4 shadow-sm">
+    <div className="grid grid-cols-2 gap-4 p-4">
+      {products.map((p) => (
+        <div
+          key={p.id}
+          className="border p-4 rounded-lg shadow-md flex flex-col items-center"
+        >
           <img
-            src={product.image}
-            alt={product.title}
-            className="h-40 mx-auto"
+            src={p.image}
+            alt={p.title}
+            className="w-32 h-32 object-contain mb-2"
           />
-          <h2 className="font-semibold mt-2">{product.title}</h2>
-          <p className="text-gray-600">${product.price}</p>
+          <h2 className="text-lg font-bold text-center">{p.title}</h2>
+          <p className="text-green-600 font-semibold">${p.price}</p>
         </div>
       ))}
-    </main>
+    </div>
   );
 }
