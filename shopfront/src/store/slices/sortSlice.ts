@@ -4,15 +4,13 @@ interface SortState {
   sortOrder: "asc" | "desc" | null;
 }
 
-const initialState: SortState = {
-  sortOrder: null,
-};
+const initialState: SortState = { sortOrder: null };
 
 const sortSlice = createSlice({
   name: "sort",
   initialState,
   reducers: {
-    setSortOrder(state, action: PayloadAction<"asc" | "desc" | null>) {
+    setSortOrder: (state, action: PayloadAction<"asc" | "desc" | null>) => {
       state.sortOrder = action.payload;
     },
   },

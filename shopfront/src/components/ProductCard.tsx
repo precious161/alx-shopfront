@@ -1,27 +1,37 @@
 import React from "react";
-import Image from "next/image";
 import { Product } from "@/types/product";
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/store/slices/cartSlice";
 
-interface Props {
+interface ProductCardProps {
   product: Product;
+  onClick?: () => void;
 }
 
-const ProductCard: React.FC<Props> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
+  const dispatch = useDispatch();
+
   return (
-    <div className="border rounded-lg p-4 shadow hover:shadow-lg transition-shadow duration-300">
-      <div className="relative w-full h-64 mb-4">
-        <Image
-          src={product.image}
-          alt={product.title}
-          fill
-          className="object-contain"
-        />
-      </div>
-      <h3 className="font-semibold text-lg mb-2">{product.title}</h3>
-      <p className="text-gray-600 mb-2">${product.price}</p>
-      <p className="text-sm text-gray-500 line-clamp-2">
-        {product.description}
-      </p>
+    <div
+      className="border rounded p-4 flex flex-col justify-between hover:shadow-lg cursor-pointer"
+      onClick={onClick}
+    >
+      <img
+        src={product.image}
+        alt={product.title}
+        className="h-40 object-contain mb-2"
+      />
+      <h3 className="font-semibold">{product.title}</h3>
+      <p className="text-gray-700">${product.price}</p>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          dispatch(addToCart(product));
+        }}
+        className="bg-blue-500 text-white py-1 px-3 rounded mt-2 hover:bg-blue-600"
+      >
+        Add to Cart
+      </button>
     </div>
   );
 };

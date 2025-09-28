@@ -5,9 +5,7 @@ interface CategoryState {
   selected: string | null;
 }
 
-const initialState: CategoryState = {
-  selected: null,
-};
+const initialState: CategoryState = { selected: null };
 
 const categorySlice = createSlice({
   name: "category",
