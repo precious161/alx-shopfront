@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { Product } from "@/types/product";
 
-// Async thunk to fetch products
 export const fetchProducts = createAsyncThunk<Product[]>(
   "products/fetch",
   async () => {
@@ -50,7 +49,6 @@ const productsSlice = createSlice({
 
 export default productsSlice.reducer;
 
-// 🔑 Selectors
 export const selectProducts = (state: RootState) => state.products.items;
 export const selectLoading = (state: RootState) => state.products.loading;
 export const selectError = (state: RootState) => state.products.error;
