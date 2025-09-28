@@ -1,31 +1,29 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { selectCurrentPage, setPage } from "@/store/slices/paginationSlice";
-import { selectProducts } from "@/store/slices/productsSlice";
 
-const Pagination: React.FC = () => {
-  const dispatch = useDispatch();
-  const currentPage = useSelector(selectCurrentPage);
-  const products = useSelector(selectProducts);
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  setCurrentPage: (page: number) => void;
+}
 
-  const pageSize = 8; // match with slice or make dynamic
-  const totalPages = Math.ceil(products.length / pageSize);
-
-  const handlePageChange = (page: number) => {
-    dispatch(setPage(page));
-  };
+const Pagination: React.FC<Props> = ({
+  currentPage,
+  totalPages,
+  setCurrentPage,
+}) => {
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <div className="flex justify-center gap-2 my-4">
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+    <div className="flex justify-center mt-6 space-x-2">
+      {pages.map((p) => (
         <button
-          key={page}
+          key={p}
           className={`px-3 py-1 rounded ${
-            page === currentPage ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
-          onClick={() => handlePageChange(page)}
+            p === currentPage ? "bg-blue-500 text-white" : "bg-gray-200"
+          } hover:bg-blue-400 transition`}
+          onClick={() => setCurrentPage(p)}
         >
-          {page}
+          {p}
         </button>
       ))}
     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchProducts,
@@ -9,31 +9,27 @@ import {
 import ProductCard from "@/components/ProductCard";
 import Filter from "@/components/Filter";
 import Sort from "@/components/Sort";
-import Pagination from "@/components/Pagination"; // new
+import Pagination from "@/components/Pagination";
 import { AppDispatch, RootState } from "@/store/store";
-import {
-  selectCurrentPage,
-  selectPageSize,
-} from "@/store/slices/paginationSlice";
 
 const Home: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const products = useSelector(selectProducts);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
-
   const selectedCategory = useSelector(
     (state: RootState) => state.category.selected
   );
   const sortOrder = useSelector((state: RootState) => state.sort.sortOrder);
-  const currentPage = useSelector(selectCurrentPage);
-  const pageSize = useSelector(selectPageSize);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  // Filter products by category
+  // Filtering
   let filteredProducts = [...products];
   if (selectedCategory) {
     filteredProducts = filteredProducts.filter(
@@ -41,7 +37,7 @@ const Home: React.FC = () => {
     );
   }
 
-  // Sort products
+  // Sorting
   if (sortOrder) {
     filteredProducts.sort((a, b) =>
       sortOrder === "asc" ? a.price - b.price : b.price - a.price
@@ -49,31 +45,35 @@ const Home: React.FC = () => {
   }
 
   // Pagination
-  const startIndex = (currentPage - 1) * pageSize;
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const paginatedProducts = filteredProducts.slice(
-    startIndex,
-    startIndex + pageSize
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
   );
 
   const categories = Array.from(new Set(products.map((p) => p.category)));
 
   return (
-    <div className="p-8">
-      <div className="flex gap-4 mb-4">
+    <div className="p-6 sm:p-8">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <Filter categories={categories} />
         <Sort />
       </div>
 
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
+      {loading && <p className="text-center text-gray-600">Loading...</p>}
+      {error && <p className="text-center text-red-500">{error}</p>}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {paginatedProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
 
-      <Pagination />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
   );
 };
